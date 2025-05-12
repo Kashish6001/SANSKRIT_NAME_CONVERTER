@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🕉 Sanskrit Name Converter</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=El+Messiri&family=Noto+Serif+Devanagari&display=swap');
+    body {
+      font-family: 'Noto Serif Devanagari', serif;
+      background: radial-gradient(circle at top, #fff8e1, #ffe0b2);
+      color: #4e342e;
+      padding: 40px;
+      text-align: center;
+    }
+    h1 {
+      font-family: 'El Messiri', serif;
+      font-size: 38px;
+      color: #6a1b1a;
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 14px;
+      font-size: 18px;
+      width: 60%;
+      border: 2px solid #d7ccc8;
+      border-radius: 10px;
+      background-color: #fffefc;
+    }
+    button {
+      padding: 12px 25px;
+      font-size: 18px;
+      background: linear-gradient(to right, #bcaaa4, #a1887f);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 15px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    }
+    button:hover {
+      background: linear-gradient(to right, #a1887f, #8d6e63);
+    }
+    #output {
+      margin-top: 30px;
+      padding: 25px;
+      border-radius: 16px;
+      background-color: #fff3e0;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      display: inline-block;
+      text-align: left;
+      max-width: 600px;
+    }
+    #sanskritWord {
+      font-size: 32px;
+      font-weight: bold;
+      color: #5d4037;
+      font-family: 'Noto Serif Devanagari', serif;
+    }
+    .info-block {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+    #shloka {
+      margin-top: 40px;
+      font-style: italic;
+      color: #6a1b1a;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔡 संस्कृत नाम परिवर्तक</h1>
+  <input type="text" id="nameInput" placeholder="Enter your name..." />
+  <br />
+  <button id="convertBtn">Convert</button>
+
+  <div id="output">
+    <div id="sanskritWord"></div>
+    <div id="englishMeaning" class="info-block"></div>
+    <div id="pronunciation" class="info-block"></div>
+    <div id="nameLengthBlock" class="info-block"></div>
+  </div>
+
+  <div id="shloka"></div>
+
+  <script>
+    const nameMap = {
+      kashish: { dev: "आकर्षणम्", meaning: "Attraction", iast: "Ākarṣaṇam" },
+      krishna: { dev: "कृष्णः", meaning: "Lord Krishna", iast: "Kṛṣṇaḥ" },
+      mannat: { dev: "प्रार्थना", meaning: "Prayer / Wish", iast: "Prārthanā" },
+      austin: { dev: "प्रतिष्ठानम्", meaning: "Prestige / Foundation", iast: "Pratiṣṭhānam" },
+      ayushi: { dev: "दीर्घायुः", meaning: "Long life", iast: "Dīrghāyuḥ" },
+      bhoj: { dev: "भोजः", meaning: "King / Feeder", iast: "Bhojaḥ" },
+      hussain: { dev: "सुन्दरः", meaning: "Beautiful", iast: "Sundaraḥ" },
+      dhruvil: { dev: "ध्रुवः", meaning: "Steady / Firm", iast: "Dhruvaḥ" },
+      chanpreet: { dev: "प्रेमी धर्मात्मा", meaning: "One who loves righteousness", iast: "Premī Dharmātmā" },
+      jashan: { dev: "उत्सवः", meaning: "Celebration / Festival", iast: "Utsavaḥ" },
+      jaskaran: { dev: "पुण्यकर्म", meaning: "Good deed / Noble act", iast: "Puṇyakarma" },
+      junaid: { dev: "युद्धकुशलः", meaning: "Skilled warrior", iast: "Yuddhakuśalaḥ" },
+      jai: { dev: "जयः", meaning: "Victory", iast: "Jayaḥ" },
+      luqman: { dev: "विद्वान्", meaning: "Wise / Scholar", iast: "Vidvān" },
+      khushpreet: { dev: "आनन्दप्रियः", meaning: "Joy-loving / Affectionate", iast: "Ānandapriyaḥ" },
+      mehak: { dev: "गन्धः", meaning: "Fragrance", iast: "Gandhaḥ" },
+      rutvi: { dev: "धर्मनिष्ठा", meaning: "Righteous / Devoted", iast: "Dharmanīṣṭhā" },
+      somya: { dev: "सौम्या", meaning: "Gentle / Calm", iast: "Saumyā" },
+      vincent: { dev: "विजयीः", meaning: "Victorious", iast: "Vijayīḥ" }
+    };
+
+    const numberMap = {
+      0: { dev: "०", word: "शून्यम्", iast: "śūnyam" },
+      1: { dev: "१", word: "एकम्", iast: "ekam" },
+      2: { dev: "२", word: "द्वे", iast: "dve" },
+      3: { dev: "३", word: "त्रीणि", iast: "trīṇi" },
+      4: { dev: "४", word: "चत्वारि", iast: "catvāri" },
+      5: { dev: "५", word: "पञ्च", iast: "pañca" },
+      6: { dev: "६", word: "षट्", iast: "ṣaṭ" },
+      7: { dev: "७", word: "सप्त", iast: "sapta" },
+      8: { dev: "८", word: "अष्ट", iast: "aṣṭa" },
+      9: { dev: "९", word: "नव", iast: "nava" },
+      10: { dev: "१०", word: "दश", iast: "daśa" }
+    };
+
+    const shlokas = [
+      { sa: "सत्यं वद धर्मं चर।", en: "Speak the truth, follow righteousness." },
+      { sa: "विद्या ददाति विनयं।", en: "Knowledge gives humility." },
+      { sa: "अहिंसा परमो धर्मः।", en: "Non-violence is the highest virtue." },
+      { sa: "कर्मण्येवाधिकारस्ते।", en: "Your right is to perform your duty only." },
+      { sa: "श्रेयान् स्वधर्मः।", en: "Better is one’s own duty." }
+    ];
+    let shlokaIndex = 0;
+
+    document.getElementById("convertBtn").addEventListener("click", () => {
+      const name = document.getElementById("nameInput").value.trim().toLowerCase();
+      const data = nameMap[name];
+
+      const wordEl = document.getElementById("sanskritWord");
+      const meaningEl = document.getElementById("englishMeaning");
+      const iastEl = document.getElementById("pronunciation");
+      const lengthEl = document.getElementById("nameLengthBlock");
+      const shlokaBox = document.getElementById("shloka");
+
+      if (data) {
+        wordEl.textContent = data.dev;
+        meaningEl.textContent = `Meaning: ${data.meaning}`;
+        iastEl.textContent = `Pronunciation: ${data.iast}`;
+
+        const len = name.length;
+        const n = numberMap[len];
+        if (n) {
+          lengthEl.innerHTML = `
+            Length: ${len} <br>
+            Sanskrit Digit: ${n.dev} <br>
+            Sanskrit Word: ${n.word} <br>
+            Pronunciation: ${n.iast}`;
+        } else {
+          lengthEl.textContent = "Name too long to convert.";
+        }
+
+        const current = shlokas[shlokaIndex];
+        shlokaBox.innerHTML = `"${current.sa}"<br>${current.en}`;
+        shlokaIndex = (shlokaIndex + 1) % shlokas.length;
+
+      } else {
+        wordEl.textContent = "नाम उपलब्ध नहीं है";
+        meaningEl.textContent = "Name not found.";
+        iastEl.textContent = "";
+        lengthEl.textContent = "";
+        shlokaBox.innerHTML = "";
+      }
+    });
+  </script>
+</body>
+</html>
