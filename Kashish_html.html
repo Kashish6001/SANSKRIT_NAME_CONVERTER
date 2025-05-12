@@ -66,6 +66,16 @@
       color: #6a1b1a;
       font-size: 20px;
     }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      50% { transform: translateX(3px); }
+      75% { transform: translateX(-3px); }
+      100% { transform: translateX(0); }
+    }
+    .shake {
+      animation: shake 0.3s ease;
+    }
   </style>
 </head>
 <body>
@@ -159,7 +169,6 @@
         const current = shlokas[shlokaIndex];
         shlokaBox.innerHTML = `"${current.sa}"<br>${current.en}`;
         shlokaIndex = (shlokaIndex + 1) % shlokas.length;
-
       } else {
         wordEl.textContent = "नाम उपलब्ध नहीं है";
         meaningEl.textContent = "Name not found.";
@@ -167,6 +176,17 @@
         lengthEl.textContent = "";
         shlokaBox.innerHTML = "";
       }
+    });
+
+    document.getElementById("nameInput").addEventListener("input", () => {
+      document.querySelectorAll("#sanskritWord, #englishMeaning, #pronunciation, #nameLengthBlock, #shloka")
+        .forEach(el => el.textContent = "");
+    });
+
+    document.addEventListener("keydown", () => {
+      const btn = document.getElementById("convertBtn");
+      btn.classList.add("shake");
+      setTimeout(() => btn.classList.remove("shake"), 300);
     });
   </script>
 </body>
